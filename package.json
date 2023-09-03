@@ -1,0 +1,12 @@
+{
+    "dependencies": {
+        "path": "^0.12.7",
+        "pixi.js": "^7.2.4",
+        "ts": "^0.2.2",
+        "webpack": "^5.88.1"
+    },
+    "type": "module",
+    "scripts": {
+        "build": "webpack --config=webpack.config.js"
+    }
+}
