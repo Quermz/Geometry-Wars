@@ -8,14 +8,7 @@ const config = {
     },
     experiments: { topLevelAwait: true },
     watch: true,
-    mode: "development",
-    devServer: {
-        static: {
-            directory: path.resolve("./", "./app/dist"),
-        },
-        compress: true,
-        port: 9000,
-    },
+    mode: "development"
 };
 
 export default config;

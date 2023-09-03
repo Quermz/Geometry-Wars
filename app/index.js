@@ -18,3 +18,4 @@ app.stage.addChild(player);
 document.body.appendChild(app.view);
 app.ticker.add((delta) => {
 });
+console.log("test");

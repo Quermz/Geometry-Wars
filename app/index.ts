@@ -27,3 +27,5 @@ document.body.appendChild(app.view);
 app.ticker.add((delta) => {
     //console.log(delta);
 });
+
+console.log("test")
