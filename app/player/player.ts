@@ -1,4 +1,5 @@
 import * as PIXI from "PIXI.js";
+import { Laser } from "./laser/laser.js";
 import { vectorCalc } from "../utils/vectors.js";
 const texture = await PIXI.Assets.load("./app/resources/player.jpg");
 
@@ -7,6 +8,7 @@ class Player {
   keysPressed: { w: boolean; a: boolean; s: boolean; d: boolean };
   currentVelocity: { x: number; y: number };
   directionKey: string;
+  counter: number;
 
   constructor(x = 200, y = 200, height = 50, width = 50) {
     this.sprite = new PIXI.Sprite(texture);
@@ -19,6 +21,7 @@ class Player {
     this.keysPressed = { w: false, a: false, s: false, d: false };
     this.directionKey = "up";
     this.currentVelocity = vectorCalc({ x: 0, y: 0 }, { x: 0, y: 0 }, 0.92);
+    this.counter = 0;
 
     window.addEventListener("keydown", ({ key }) => {
       switch (key) {
@@ -119,6 +122,17 @@ class Player {
       case "right":
         this.sprite.rotation = (1 / 2) * Math.PI;
         break;
+    }
+  }
+  shoot() {
+    this.counter += 1;
+    if (this.counter == 50) {
+      this.counter = 0;
+      let laser = new Laser(this.sprite.x, this.sprite.y, this.directionKey, 8);
+
+      return laser;
+    } else {
+      return false;
     }
   }
 }
