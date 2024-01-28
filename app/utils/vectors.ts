@@ -36,4 +36,4 @@ function convertVector(vec: vector): vector {
   return { x: vec.x / conv, y: vec.y / conv };
 }
 
-export { vectorCalc };
+export { vectorCalc, vector };

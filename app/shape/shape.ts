@@ -4,7 +4,8 @@ import { vectorCalc } from "../utils/vectors.js";
 class Shape {
   sprite: PIXI.Graphics;
   currentVelocity: { x: number; y: number };
-  counter: number;
+  edge: number;
+  hit: boolean;
 
   constructor(height: number, width: number, x: number, y: number) {
     this.sprite = new PIXI.Graphics();
@@ -12,6 +13,8 @@ class Shape {
     this.sprite.width = width;
     this.sprite.x = x;
     this.sprite.y = y;
+    this.edge = height;
+    this.hit = false;
   }
 }
 
@@ -51,7 +54,6 @@ class Square extends Shape {
       this.sprite.x += newVelocity.x * 2;
       this.sprite.y += newVelocity.y * 2;
     } else if (this.counter == 200) {
-      console.log(this.currentVelocity);
       let newVelocity = {
         x: -this.currentVelocity.x,
         y: -this.currentVelocity.y,
@@ -65,6 +67,7 @@ class Square extends Shape {
       }
     }
   }
+  destory() {}
 }
 
 class Circle extends Shape {
@@ -90,12 +93,12 @@ class Circle extends Shape {
     let newVelocity = vectorCalc(
       this.currentVelocity,
       { x: targetX, y: targetY },
-      0.99
+      0.9
     );
     this.currentVelocity = newVelocity;
-    this.sprite.x += newVelocity.x * 3;
-    this.sprite.y += newVelocity.y * 3;
+    this.sprite.x += newVelocity.x * 1.5;
+    this.sprite.y += newVelocity.y * 1.5;
   }
 }
 
-export { Square, Circle };
+export { Shape, Square, Circle };
