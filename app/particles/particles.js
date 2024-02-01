@@ -3,8 +3,9 @@ class Particle {
     constructor() {
         this.container = new PIXI.Container();
         this.particleArray = [];
+        this.added = false;
     }
-    create(colour, shape) {
+    create(colour, shape, x, y) {
         for (let i = 0; i < 5; i++) {
             let particle = {
                 sprite: new PIXI.Graphics(),
@@ -19,8 +20,8 @@ class Particle {
                 let size = 5 + 5 * Math.random();
                 particle.sprite.drawRect(0, 0, size, size);
             }
-            particle.sprite.x = 200;
-            particle.sprite.y = 200;
+            particle.sprite.x = x;
+            particle.sprite.y = y;
             this.container.addChild(particle.sprite);
             this.particleArray.push(particle);
             console.log(particle.sprite.alpha);

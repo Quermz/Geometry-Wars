@@ -1,7 +1,8 @@
 import * as PIXI from "PIXI.js";
 import { vectorCalc } from "../utils/vectors.js";
+import { Particle } from "../particles/particles.js";
 class Shape {
-    constructor(height, width, x, y) {
+    constructor(height, width, x, y, shape, colour) {
         this.sprite = new PIXI.Graphics();
         this.sprite.height = height;
         this.sprite.width = width;
@@ -9,12 +10,23 @@ class Shape {
         this.sprite.y = y;
         this.edge = height;
         this.hit = false;
+        this.live = true;
+        this.shape = shape;
+        this.colour = colour;
+    }
+    explode() {
+        this.live = false;
+        if (this.hit && !this.live) {
+            let particles = new Particle();
+            particles.create(this.colour, this.shape, this.sprite.x, this.sprite.y);
+            return particles;
+        }
     }
 }
 class Square extends Shape {
     constructor(height, width, x, y) {
-        super(height, width, x, y);
-        this.sprite.lineStyle(1.5, "green");
+        super(height, width, x, y, "square", "green");
+        this.sprite.lineStyle(1.5, this.colour);
         this.sprite.drawRect(0, 0, height, width);
         this.currentVelocity = vectorCalc({ x: 0, y: 0 }, { x: 0, y: 0 }, 0.92);
         this.counter = 0;
@@ -62,8 +74,8 @@ class Square extends Shape {
 }
 class Circle extends Shape {
     constructor(width, x, y) {
-        super(width, width, x, y);
-        this.sprite.lineStyle(1.5, "blue");
+        super(width, width, x, y, "circle", "blue");
+        this.sprite.lineStyle(1.5, this.colour);
         this.sprite.drawCircle(0, 0, width);
         this.currentVelocity = vectorCalc({ x: 0, y: 0 }, { x: 0, y: 0 }, 0.92);
     }

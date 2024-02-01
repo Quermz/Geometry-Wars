@@ -3,7 +3,6 @@ import { Player } from "./player/player.js";
 import { Laser } from "./player/laser/laser.js";
 import { Square, Circle } from "./shape/shape.js";
 import { Particle } from "./particles/particles.js";
-const texture = await PIXI.Assets.load("./app/resources/player.jpg");
 
 const app = new PIXI.Application<HTMLCanvasElement>({
   width: 960,
@@ -27,29 +26,44 @@ app.stage.onmousemove = (e) => {
 };
 let laserArr: Laser[] = [];
 
-let part = new Particle();
-part.create("green", "square");
-app.stage.addChild(part.container);
+let particles: Particle[] = [];
 
 app.ticker.add(() => {
-  part.move();
-  let laser = player.shoot();
   player.move();
   square.move(player.sprite.x, player.sprite.y);
   circle.move(player.sprite.x, player.sprite.y);
+
+  let laser = player.shoot();
+
   if (laser) {
     laserArr.push(laser);
     app.stage.addChild(laser.sprite);
   }
-  let newArr: Laser[] = [];
+
+  let newLaserArr: Laser[] = [];
+
   for (let laser of laserArr) {
     laser.collision([circle, square]);
     laser.move();
     if (!laser.bounds()) {
-      newArr.push(laser);
+      newLaserArr.push(laser);
     } else {
       app.stage.removeChild(laser.sprite);
     }
   }
-  laserArr = newArr;
+  for (let shape of [circle, square]) {
+    if (shape.hit && shape.live) {
+      particles.push(shape.explode());
+      app.stage.removeChild(shape.sprite);
+    }
+  }
+  console.log(particles);
+  for (let particle of particles) {
+    if (!particle.added) {
+      app.stage.addChild(particle.container);
+      particle.added = true;
+    }
+    particle.move();
+  }
+  laserArr = newLaserArr;
 });
