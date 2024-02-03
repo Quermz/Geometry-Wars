@@ -21,8 +21,6 @@ let laserArr = [];
 let particles = [];
 app.ticker.add(() => {
     player.move();
-    square.move(player.sprite.x, player.sprite.y);
-    circle.move(player.sprite.x, player.sprite.y);
     let laser = player.shoot();
     if (laser) {
         laserArr.push(laser);
@@ -30,22 +28,24 @@ app.ticker.add(() => {
     }
     let newLaserArr = [];
     for (let laser of laserArr) {
-        laser.collision([circle, square]);
         laser.move();
-        if (!laser.bounds()) {
+        console.log(laser.collision([circle, square]));
+        if (!laser.collision([circle, square]) && !laser.bounds()) {
             newLaserArr.push(laser);
         }
         else {
             app.stage.removeChild(laser.sprite);
         }
     }
+    laserArr = newLaserArr;
+    square.move(player.sprite.x, player.sprite.y);
+    circle.move(player.sprite.x, player.sprite.y);
     for (let shape of [circle, square]) {
         if (shape.hit && shape.live) {
             particles.push(shape.explode());
             app.stage.removeChild(shape.sprite);
         }
     }
-    console.log(particles);
     for (let particle of particles) {
         if (!particle.added) {
             app.stage.addChild(particle.container);
@@ -53,5 +53,4 @@ app.ticker.add(() => {
         }
         particle.move();
     }
-    laserArr = newLaserArr;
 });

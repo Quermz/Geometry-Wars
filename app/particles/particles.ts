@@ -32,6 +32,9 @@ class Particle {
       }
       particle.sprite.x = x;
       particle.sprite.y = y;
+      let blurFilter = new PIXI.BlurFilter(0);
+      let alphaFilter = new PIXI.AlphaFilter(1.05);
+      particle.sprite.filters = [blurFilter, alphaFilter];
       this.container.addChild(particle.sprite);
       this.particleArray.push(particle);
       console.log(particle.sprite.alpha);

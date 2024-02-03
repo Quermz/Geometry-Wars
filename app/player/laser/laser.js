@@ -3,13 +3,16 @@ import { collision } from "../../utils/collision.js";
 class Laser {
     constructor(x, y, direction, velocity) {
         this.sprite = new PIXI.Graphics();
-        this.sprite.lineStyle(1.5, "0xFF0000");
+        this.sprite.lineStyle(1.5, "white");
         this.sprite.drawCircle(0, 0, 3);
         this.sprite.x = x;
         this.sprite.y = y;
-        this.edge = 5;
         this.direction = direction;
         this.velocity = velocity;
+        this.edge = 3;
+        let blurFilter = new PIXI.BlurFilter(1.25);
+        let alphaFilter = new PIXI.AlphaFilter(1.5);
+        this.sprite.filters = [blurFilter, alphaFilter];
     }
     move() {
         switch (this.direction) {
@@ -46,9 +49,10 @@ class Laser {
         for (let shape of shapes) {
             if (collision(this, shape)) {
                 shape.hit = true;
-                console.log("hit");
+                return true;
             }
         }
+        return false;
     }
 }
 export { Laser };

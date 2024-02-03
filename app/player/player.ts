@@ -1,7 +1,7 @@
 import * as PIXI from "PIXI.js";
 import { Laser } from "./laser/laser.js";
 import { vectorCalc } from "../utils/vectors.js";
-const texture = await PIXI.Assets.load("./app/resources/player.jpg");
+const texture = await PIXI.Assets.load("./app/resources/player2.png");
 
 class Player {
   sprite: PIXI.Sprite;
@@ -92,7 +92,7 @@ class Player {
     let newVelocity = vectorCalc(
       this.currentVelocity,
       { x: targetX, y: targetY },
-      0.9
+      0.92
     );
     this.currentVelocity = newVelocity;
     this.sprite.x += newVelocity.x * 4;

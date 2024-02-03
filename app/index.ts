@@ -30,34 +30,42 @@ let particles: Particle[] = [];
 
 app.ticker.add(() => {
   player.move();
-  square.move(player.sprite.x, player.sprite.y);
-  circle.move(player.sprite.x, player.sprite.y);
 
+  //Player shoots automatically after 50 ticks
   let laser = player.shoot();
-
   if (laser) {
     laserArr.push(laser);
     app.stage.addChild(laser.sprite);
   }
 
+  //New array created with all lasers still in range
   let newLaserArr: Laser[] = [];
 
   for (let laser of laserArr) {
-    laser.collision([circle, square]);
     laser.move();
-    if (!laser.bounds()) {
+    console.log(laser.collision([circle, square]));
+    if (!laser.collision([circle, square]) && !laser.bounds()) {
       newLaserArr.push(laser);
     } else {
       app.stage.removeChild(laser.sprite);
     }
   }
+
+  laserArr = newLaserArr;
+
+  // console.log(laserArr);
+  square.move(player.sprite.x, player.sprite.y);
+  circle.move(player.sprite.x, player.sprite.y);
+
+  //If shape is hit and is live, particles are added to stage
   for (let shape of [circle, square]) {
     if (shape.hit && shape.live) {
       particles.push(shape.explode());
       app.stage.removeChild(shape.sprite);
     }
   }
-  console.log(particles);
+
+  //If particles haven't already been added to stage, add particle container to stage
   for (let particle of particles) {
     if (!particle.added) {
       app.stage.addChild(particle.container);
@@ -65,5 +73,4 @@ app.ticker.add(() => {
     }
     particle.move();
   }
-  laserArr = newLaserArr;
 });
