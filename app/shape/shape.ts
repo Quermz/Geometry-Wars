@@ -10,6 +10,7 @@ class Shape {
   live: boolean;
   colour: string;
   shape: string;
+  counter: number;
 
   constructor(
     height: number,
@@ -29,6 +30,7 @@ class Shape {
     this.live = true;
     this.shape = shape;
     this.colour = colour;
+    this.sprite.alpha = 0;
   }
   explode() {
     this.live = false;
@@ -38,10 +40,13 @@ class Shape {
       return particles;
     }
   }
+  move(x = 0, y = 0) {}
+  spawn() {
+    if (this.sprite.alpha < 1) this.sprite.alpha += 0.01;
+  }
 }
 
 class Square extends Shape {
-  counter: number;
   constructor(height: number, width: number, x: number, y: number) {
     super(height, width, x, y, "square", "green");
     this.sprite.lineStyle(1.5, this.colour);
@@ -50,6 +55,7 @@ class Square extends Shape {
     this.counter = 0;
   }
   move(x = 0, y = 0) {
+    this.spawn();
     this.counter += 1;
     if (this.counter < 200) {
       let targetX = 0;
@@ -98,13 +104,69 @@ class Circle extends Shape {
     this.sprite.lineStyle(1.5, this.colour);
     this.sprite.drawCircle(0, 0, width);
     this.currentVelocity = vectorCalc({ x: 0, y: 0 }, { x: 0, y: 0 }, 0.92);
+    this.counter = 0;
   }
   move(x = 0, y = 0) {
+    this.spawn();
+    this.counter += 1;
+    if (this.counter <= 200) {
+      let targetX = 0;
+      let targetY = 0;
+      if (this.sprite.x < x) {
+        targetX = 1 - Math.random();
+      } else if (this.sprite.x > x) {
+        targetX = -1;
+      }
+
+      if (this.sprite.y < y) {
+        targetY = 1;
+      } else if (this.sprite.y > y) {
+        targetY = -1;
+      }
+      let newVelocity = vectorCalc(
+        this.currentVelocity,
+        { x: targetX, y: targetY },
+        0.98
+      );
+      this.currentVelocity = newVelocity;
+      this.sprite.x += newVelocity.x * (1.5 + Math.random());
+      this.sprite.y += newVelocity.y * (1.5 + Math.random());
+    } else if (this.counter > 200) {
+      let targetX = Math.random();
+      let targetY = Math.random();
+      let newVelocity = vectorCalc(
+        this.currentVelocity,
+        { x: targetX, y: targetY },
+        0.98
+      );
+      this.currentVelocity = newVelocity;
+      this.sprite.x += newVelocity.x * 3;
+      this.sprite.y += newVelocity.y * 3;
+      if (this.counter > 250) {
+        this.counter = 0;
+      }
+    }
+  }
+}
+
+class Triangle extends Shape {
+  constructor(height: number, x: number, y: number) {
+    super(30, 30, x, y, "triangle", "red");
+    const path = [0, 50, 25, 50 - (50 * Math.sqrt(3)) / 2, 50, 50];
+    this.sprite.lineStyle(1.5, this.colour);
+    this.sprite.drawPolygon(path);
+    this.sprite.endFill();
+    this.currentVelocity = vectorCalc({ x: 0, y: 0 }, { x: 0, y: 0 }, 0.92);
+  }
+  move(x = 0, y = 0) {
+    this.spawn();
     let targetX = 0;
     let targetY = 0;
     if (this.sprite.x < x) {
+      this.sprite.rotation += 0.0005 * Math.PI;
       targetX = 1;
     } else if (this.sprite.x > x) {
+      this.sprite.rotation -= 0.0005 * Math.PI;
       targetX = -1;
     }
     if (this.sprite.y < y) {
@@ -115,12 +177,12 @@ class Circle extends Shape {
     let newVelocity = vectorCalc(
       this.currentVelocity,
       { x: targetX, y: targetY },
-      0.9
+      0.98
     );
     this.currentVelocity = newVelocity;
-    this.sprite.x += newVelocity.x * 1.5;
-    this.sprite.y += newVelocity.y * 1.5;
+    this.sprite.x += newVelocity.x * 0.5;
+    this.sprite.y += newVelocity.y * 0.5;
   }
 }
 
-export { Shape, Square, Circle };
+export { Shape, Square, Circle, Triangle };

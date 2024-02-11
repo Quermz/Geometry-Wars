@@ -1,8 +1,9 @@
 import * as PIXI from "PIXI.js";
 import { Player } from "./player/player.js";
 import { Laser } from "./player/laser/laser.js";
-import { Square, Circle } from "./shape/shape.js";
+import { Shape, Square, Circle } from "./shape/shape.js";
 import { Particle } from "./particles/particles.js";
+import { spawner } from "./shape/spawner/spawner.js";
 
 const app = new PIXI.Application<HTMLCanvasElement>({
   width: 960,
@@ -11,22 +12,20 @@ const app = new PIXI.Application<HTMLCanvasElement>({
 });
 
 const player = new Player();
-const square = new Square(20, 20, 300, 300);
-const circle = new Circle(20, 300, 300);
+// const square = new Square(20, 20, 300, 300);
+// const circle = new Circle(20, 300, 300);
 
-app.stage.addChild(square.sprite);
-app.stage.addChild(circle.sprite);
+// app.stage.addChild(square.sprite);
+// app.stage.addChild(circle.sprite);
 app.stage.addChild(player.sprite);
 
 document.body.appendChild(app.view);
 
-app.stage.onmousemove = (e) => {
-  console.log(e);
-  console.log("first");
-};
 let laserArr: Laser[] = [];
 
-let particles: Particle[] = [];
+let particlesArray: Particle[] = [];
+
+let shapeArray: Shape[] = [];
 
 app.ticker.add(() => {
   player.move();
@@ -43,8 +42,7 @@ app.ticker.add(() => {
 
   for (let laser of laserArr) {
     laser.move();
-    console.log(laser.collision([circle, square]));
-    if (!laser.collision([circle, square]) && !laser.bounds()) {
+    if (!laser.collision(shapeArray) && !laser.bounds()) {
       newLaserArr.push(laser);
     } else {
       app.stage.removeChild(laser.sprite);
@@ -53,24 +51,52 @@ app.ticker.add(() => {
 
   laserArr = newLaserArr;
 
-  // console.log(laserArr);
-  square.move(player.sprite.x, player.sprite.y);
-  circle.move(player.sprite.x, player.sprite.y);
+  let newShapeArr: Shape[] = [];
 
-  //If shape is hit and is live, particles are added to stage
-  for (let shape of [circle, square]) {
+  //If shape is hit and is live, particles are added to stage and shape is removed
+  for (let shape of shapeArray) {
+    shape.move(player.sprite.x, player.sprite.y);
     if (shape.hit && shape.live) {
-      particles.push(shape.explode());
+      particlesArray.push(shape.explode());
       app.stage.removeChild(shape.sprite);
+    } else {
+      newShapeArr.push(shape);
     }
   }
 
-  //If particles haven't already been added to stage, add particle container to stage
-  for (let particle of particles) {
-    if (!particle.added) {
-      app.stage.addChild(particle.container);
-      particle.added = true;
+  //If particlesArray haven't already been added to stage, add particle container to stage
+  for (let i in particlesArray) {
+    if (!particlesArray[i].added) {
+      app.stage.addChild(particlesArray[i].container);
+      particlesArray[i].added = true;
     }
-    particle.move();
+    particlesArray[i].move();
+    // if (particlesArray[i].finished) {
+    //   app.stage.removeChild(particlesArray[i].container);
+    //   particlesArray.splice(parseInt(i));
+    // }
   }
+
+  // for (let i in particlesArray) {
+  //   if (particlesArray[i].finished) {
+  //     console.log("finito");
+  //     app.stage.removeChild(particlesArray[i].container);
+  //     particlesArray.splice(parseInt(i));
+  //   }
+  // }
+
+  //Create new shape
+  let newShape = spawner(
+    30,
+    25,
+    newShapeArr.length,
+    player.sprite.x,
+    player.sprite.y
+  );
+  if (newShape) {
+    newShapeArr.push(newShape);
+    app.stage.addChild(newShape.sprite);
+  }
+
+  shapeArray = newShapeArr;
 });

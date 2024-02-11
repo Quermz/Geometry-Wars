@@ -22,6 +22,7 @@ class Player {
     this.directionKey = "up";
     this.currentVelocity = vectorCalc({ x: 0, y: 0 }, { x: 0, y: 0 }, 0.92);
     this.counter = 0;
+    let alphaFilter = new PIXI.AlphaFilter(1.5);
 
     window.addEventListener("keydown", ({ key }) => {
       switch (key) {
@@ -77,6 +78,7 @@ class Player {
   move(xLimit = 960, yLimit = 640) {
     let targetX = 0;
     let targetY = 0;
+
     if (this.keysPressed.d && !this.keysPressed.a) {
       targetX = 1;
     }
@@ -92,7 +94,7 @@ class Player {
     let newVelocity = vectorCalc(
       this.currentVelocity,
       { x: targetX, y: targetY },
-      0.92
+      0.9
     );
     this.currentVelocity = newVelocity;
     this.sprite.x += newVelocity.x * 4;
@@ -126,7 +128,7 @@ class Player {
   }
   shoot() {
     this.counter += 1;
-    if (this.counter == 50) {
+    if (this.counter == 20) {
       this.counter = 0;
       let laser = new Laser(this.sprite.x, this.sprite.y, this.directionKey, 8);
 

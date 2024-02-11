@@ -1,9 +1,11 @@
 import * as PIXI from "PIXI.js";
 class Particle {
     constructor() {
+        this.finished = false;
         this.container = new PIXI.Container();
         this.particleArray = [];
         this.added = false;
+        this.finished = false;
     }
     create(colour, shape, x, y) {
         for (let i = 0; i < 5; i++) {
@@ -20,6 +22,19 @@ class Particle {
                 let size = 5 + 5 * Math.random();
                 particle.sprite.drawRect(0, 0, size, size);
             }
+            if (shape == "triangle") {
+                let size = 5 + 5 * Math.random();
+                const path = [
+                    0,
+                    size,
+                    size / 2,
+                    size - (size * Math.sqrt(3)) / 2,
+                    size,
+                    size,
+                ];
+                particle.sprite.drawPolygon(path);
+                particle.sprite.rotation = Math.PI * 2 * Math.random();
+            }
             particle.sprite.x = x;
             particle.sprite.y = y;
             let blurFilter = new PIXI.BlurFilter(0);
@@ -27,7 +42,6 @@ class Particle {
             particle.sprite.filters = [blurFilter, alphaFilter];
             this.container.addChild(particle.sprite);
             this.particleArray.push(particle);
-            console.log(particle.sprite.alpha);
         }
     }
     move() {
@@ -35,6 +49,9 @@ class Particle {
             particle.sprite.x += particle.direction.x / 2;
             particle.sprite.y += particle.direction.y / 2;
             particle.sprite.alpha -= 0.005 + Math.random() / 1000;
+            if (particle.sprite.alpha == 0) {
+                this.finished = true;
+            }
         }
     }
 }
