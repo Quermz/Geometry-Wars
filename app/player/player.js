@@ -65,7 +65,7 @@ class Player {
             }
         });
     }
-    move(xLimit = 960, yLimit = 640) {
+    move(delta, xLimit = 960, yLimit = 640) {
         let targetX = 0;
         let targetY = 0;
         if (this.keysPressed.d && !this.keysPressed.a) {
@@ -80,10 +80,10 @@ class Player {
         if (this.keysPressed.s && !this.keysPressed.w) {
             targetY = 1;
         }
-        let newVelocity = vectorCalc(this.currentVelocity, { x: targetX, y: targetY }, 0.9);
+        let newVelocity = vectorCalc(this.currentVelocity, { x: delta * targetX, y: delta * targetY }, 0.9);
         this.currentVelocity = newVelocity;
-        this.sprite.x += newVelocity.x * 4;
-        this.sprite.y += newVelocity.y * 4;
+        this.sprite.x += newVelocity.x * 8 * delta;
+        this.sprite.y += newVelocity.y * 8 * delta;
         if (this.sprite.x < this.sprite.width / 2) {
             this.sprite.x = this.sprite.width / 2;
         }
@@ -111,11 +111,11 @@ class Player {
                 break;
         }
     }
-    shoot() {
+    shoot(delta) {
         this.counter += 1;
-        if (this.counter == 20) {
+        if (this.counter > 20 * delta) {
             this.counter = 0;
-            let laser = new Laser(this.sprite.x, this.sprite.y, this.directionKey, 8);
+            let laser = new Laser(this.sprite.x, this.sprite.y, this.directionKey, delta * 16);
             return laser;
         }
         else {

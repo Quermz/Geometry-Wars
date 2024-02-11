@@ -12,11 +12,7 @@ const app = new PIXI.Application<HTMLCanvasElement>({
 });
 
 const player = new Player();
-// const square = new Square(20, 20, 300, 300);
-// const circle = new Circle(20, 300, 300);
 
-// app.stage.addChild(square.sprite);
-// app.stage.addChild(circle.sprite);
 app.stage.addChild(player.sprite);
 
 document.body.appendChild(app.view);
@@ -26,12 +22,12 @@ let laserArr: Laser[] = [];
 let particlesArray: Particle[] = [];
 
 let shapeArray: Shape[] = [];
+app.ticker.maxFPS = 60;
+app.ticker.add((delta) => {
+  player.move(delta);
 
-app.ticker.add(() => {
-  player.move();
-
-  //Player shoots automatically after 50 ticks
-  let laser = player.shoot();
+  //Player shoots automatically after x  ticks
+  let laser = player.shoot(delta);
   if (laser) {
     laserArr.push(laser);
     app.stage.addChild(laser.sprite);
@@ -55,7 +51,7 @@ app.ticker.add(() => {
 
   //If shape is hit and is live, particles are added to stage and shape is removed
   for (let shape of shapeArray) {
-    shape.move(player.sprite.x, player.sprite.y);
+    shape.move(delta, player.sprite.x, player.sprite.y);
     if (shape.hit && shape.live) {
       particlesArray.push(shape.explode());
       app.stage.removeChild(shape.sprite);
@@ -70,23 +66,21 @@ app.ticker.add(() => {
       app.stage.addChild(particlesArray[i].container);
       particlesArray[i].added = true;
     }
-    particlesArray[i].move();
-    // if (particlesArray[i].finished) {
-    //   app.stage.removeChild(particlesArray[i].container);
-    //   particlesArray.splice(parseInt(i));
-    // }
+    particlesArray[i].move(delta);
   }
 
-  // for (let i in particlesArray) {
-  //   if (particlesArray[i].finished) {
-  //     console.log("finito");
-  //     app.stage.removeChild(particlesArray[i].container);
-  //     particlesArray.splice(parseInt(i));
-  //   }
-  // }
+  //If particles have finished their animations remove from array
+  for (let i in particlesArray) {
+    if (particlesArray[i].finished) {
+      console.log("finito");
+      app.stage.removeChild(particlesArray[i].container);
+      particlesArray.splice(parseInt(i));
+    }
+  }
 
   //Create new shape
   let newShape = spawner(
+    delta,
     30,
     25,
     newShapeArr.length,

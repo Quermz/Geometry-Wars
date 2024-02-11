@@ -54,11 +54,11 @@ class Particle {
       this.particleArray.push(particle);
     }
   }
-  move() {
+  move(delta: number) {
     for (let particle of this.particleArray) {
-      particle.sprite.x += particle.direction.x / 2;
-      particle.sprite.y += particle.direction.y / 2;
-      particle.sprite.alpha -= 0.005 + Math.random() / 1000;
+      particle.sprite.x += (particle.direction.x / 2) * delta;
+      particle.sprite.y += (particle.direction.y / 2) * delta;
+      particle.sprite.alpha -= 0.01 + (Math.random() / 1000) * delta;
       if (particle.sprite.alpha == 0) {
         this.finished = true;
       }

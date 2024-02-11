@@ -12,9 +12,10 @@ document.body.appendChild(app.view);
 let laserArr = [];
 let particlesArray = [];
 let shapeArray = [];
-app.ticker.add(() => {
-    player.move();
-    let laser = player.shoot();
+app.ticker.maxFPS = 60;
+app.ticker.add((delta) => {
+    player.move(delta);
+    let laser = player.shoot(delta);
     if (laser) {
         laserArr.push(laser);
         app.stage.addChild(laser.sprite);
@@ -32,7 +33,7 @@ app.ticker.add(() => {
     laserArr = newLaserArr;
     let newShapeArr = [];
     for (let shape of shapeArray) {
-        shape.move(player.sprite.x, player.sprite.y);
+        shape.move(delta, player.sprite.x, player.sprite.y);
         if (shape.hit && shape.live) {
             particlesArray.push(shape.explode());
             app.stage.removeChild(shape.sprite);
@@ -46,9 +47,16 @@ app.ticker.add(() => {
             app.stage.addChild(particlesArray[i].container);
             particlesArray[i].added = true;
         }
-        particlesArray[i].move();
+        particlesArray[i].move(delta);
     }
-    let newShape = spawner(30, 25, newShapeArr.length, player.sprite.x, player.sprite.y);
+    for (let i in particlesArray) {
+        if (particlesArray[i].finished) {
+            console.log("finito");
+            app.stage.removeChild(particlesArray[i].container);
+            particlesArray.splice(parseInt(i));
+        }
+    }
+    let newShape = spawner(delta, 30, 25, newShapeArr.length, player.sprite.x, player.sprite.y);
     if (newShape) {
         newShapeArr.push(newShape);
         app.stage.addChild(newShape.sprite);
