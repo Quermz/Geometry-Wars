@@ -1,16 +1,28 @@
 import * as PIXI from "PIXI.js";
 import { Shape, Square, Circle, Triangle } from "../shape.js";
+import { Score } from "app/score/score.js";
 
 let count = 0;
 
+let counterLimit = 10;
+
+let shapeLimit = 40;
+
+let oldScore = 0;
+
 function spawner(
   delta: number,
-  shapeLimit: number,
-  counterLimit: number,
+  score: number,
   liveShapes: number,
   playerX: number = 0,
   playerY: number = 0
 ) {
+  console.log(score);
+  if (score > oldScore + 500) {
+    if (shapeLimit < 40) shapeLimit += 5;
+    if (counterLimit > 20) counterLimit -= 5;
+  }
+
   count += 1;
   if (count >= counterLimit * delta) {
     count = 0;

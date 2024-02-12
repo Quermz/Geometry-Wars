@@ -113,7 +113,7 @@ class Player {
     }
     shoot(delta) {
         this.counter += 1;
-        if (this.counter > 20 * delta) {
+        if (this.counter > 5 * delta) {
             this.counter = 0;
             let laser = new Laser(this.sprite.x, this.sprite.y, this.directionKey, delta * 16);
             return laser;

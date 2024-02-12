@@ -1,6 +1,7 @@
 import * as PIXI from "PIXI.js";
 import { Player } from "./player/player.js";
 import { spawner } from "./shape/spawner/spawner.js";
+import { Score } from "./score/score.js";
 const app = new PIXI.Application({
     width: 960,
     height: 640,
@@ -12,9 +13,12 @@ document.body.appendChild(app.view);
 let laserArr = [];
 let particlesArray = [];
 let shapeArray = [];
+let score = new Score();
 app.ticker.maxFPS = 60;
+app.stage.addChild(score.text);
 app.ticker.add((delta) => {
     player.move(delta);
+    score.incremenetScore();
     let laser = player.shoot(delta);
     if (laser) {
         laserArr.push(laser);
@@ -35,6 +39,7 @@ app.ticker.add((delta) => {
     for (let shape of shapeArray) {
         shape.move(delta, player.sprite.x, player.sprite.y);
         if (shape.hit && shape.live) {
+            score.shapeHit(shape.shape);
             particlesArray.push(shape.explode());
             app.stage.removeChild(shape.sprite);
         }
@@ -56,7 +61,7 @@ app.ticker.add((delta) => {
             particlesArray.splice(parseInt(i));
         }
     }
-    let newShape = spawner(delta, 30, 25, newShapeArr.length, player.sprite.x, player.sprite.y);
+    let newShape = spawner(delta, score.score, newShapeArr.length, player.sprite.x, player.sprite.y);
     if (newShape) {
         newShapeArr.push(newShape);
         app.stage.addChild(newShape.sprite);
