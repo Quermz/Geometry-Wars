@@ -1,5 +1,6 @@
 {
     "dependencies": {
+        "@pixi/sound": "^5.2.3",
         "path": "^0.12.7",
         "pixi.js": "^7.2.4",
         "ts": "^0.2.2",

@@ -9,8 +9,9 @@ class Laser {
   edge: number;
   constructor(x: number, y: number, direction: string, velocity: number) {
     this.sprite = new PIXI.Graphics();
-    this.sprite.lineStyle(1.5, "white");
+    this.sprite.lineStyle(1, "white");
     this.sprite.drawCircle(0, 0, 3);
+    // this.sprite.drawRect(0, 0, 2, 2);
     this.sprite.x = x;
     this.sprite.y = y;
     this.direction = direction;

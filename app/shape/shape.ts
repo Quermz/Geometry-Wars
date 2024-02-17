@@ -34,11 +34,9 @@ class Shape {
   }
   explode() {
     this.live = false;
-    if (this.hit && !this.live) {
-      let particles = new Particle();
-      particles.create(this.colour, this.shape, this.sprite.x, this.sprite.y);
-      return particles;
-    }
+    let particles = new Particle();
+    particles.create(this.colour, this.shape, this.sprite.x, this.sprite.y);
+    return particles;
   }
   move(delta: number, x = 0, y = 0) {}
   spawn(delta: number) {

@@ -1,6 +1,8 @@
 import * as PIXI from "PIXI.js";
 import { Laser } from "./laser/laser.js";
 import { vectorCalc } from "../utils/vectors.js";
+import { Particle } from "../particles/particles.js";
+
 const texture = await PIXI.Assets.load("./app/resources/player2.png");
 
 class Player {
@@ -9,6 +11,9 @@ class Player {
   currentVelocity: { x: number; y: number };
   directionKey: string;
   counter: number;
+  edge: number;
+  firingLimit: number;
+  oldScore: number;
 
   constructor(x = 200, y = 200, height = 50, width = 50) {
     this.sprite = new PIXI.Sprite(texture);
@@ -22,7 +27,9 @@ class Player {
     this.directionKey = "up";
     this.currentVelocity = vectorCalc({ x: 0, y: 0 }, { x: 0, y: 0 }, 0.92);
     this.counter = 0;
-    let alphaFilter = new PIXI.AlphaFilter(1.5);
+    this.edge = 12;
+    this.firingLimit = 10;
+    this.oldScore = 0;
 
     window.addEventListener("keydown", ({ key }) => {
       switch (key) {
@@ -126,9 +133,14 @@ class Player {
         break;
     }
   }
-  shoot(delta: number) {
+  shoot(delta: number, score: number) {
+    if (score > this.oldScore + 500 && this.firingLimit > 7) {
+      this.firingLimit -= 1;
+      this.oldScore = score;
+    }
+
     this.counter += 1;
-    if (this.counter > 5 * delta) {
+    if (this.counter > this.firingLimit * delta) {
       this.counter = 0;
       let laser = new Laser(
         this.sprite.x,
@@ -141,6 +153,11 @@ class Player {
     } else {
       return false;
     }
+  }
+  explode() {
+    let particles = new Particle();
+    particles.create("white", "player", this.sprite.x, this.sprite.y);
+    return particles;
   }
 }
 

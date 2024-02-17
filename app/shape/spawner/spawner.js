@@ -4,9 +4,8 @@ let counterLimit = 10;
 let shapeLimit = 40;
 let oldScore = 0;
 function spawner(delta, score, liveShapes, playerX = 0, playerY = 0) {
-    console.log(score);
     if (score > oldScore + 500) {
-        if (shapeLimit < 40)
+        if (shapeLimit < 50)
             shapeLimit += 5;
         if (counterLimit > 20)
             counterLimit -= 5;

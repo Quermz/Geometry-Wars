@@ -17,9 +17,8 @@ function spawner(
   playerX: number = 0,
   playerY: number = 0
 ) {
-  console.log(score);
   if (score > oldScore + 500) {
-    if (shapeLimit < 40) shapeLimit += 5;
+    if (shapeLimit < 50) shapeLimit += 5;
     if (counterLimit > 20) counterLimit -= 5;
   }
 

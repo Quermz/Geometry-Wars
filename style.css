@@ -1,0 +1,25 @@
+html,body {padding:0; margin:0;box-sizing: border-box;}
+
+body{
+  overflow: hidden; /* Hide scrollbars */
+  background-color: black;
+  height: 100vh;
+
+}
+
+
+
+.container{
+  margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  height:640px;
+  width: 100%;
+  
+}
+
+.test{
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, .5);
+}

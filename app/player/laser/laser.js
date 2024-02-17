@@ -3,7 +3,7 @@ import { collision } from "../../utils/collision.js";
 class Laser {
     constructor(x, y, direction, velocity) {
         this.sprite = new PIXI.Graphics();
-        this.sprite.lineStyle(1.5, "white");
+        this.sprite.lineStyle(1, "white");
         this.sprite.drawCircle(0, 0, 3);
         this.sprite.x = x;
         this.sprite.y = y;

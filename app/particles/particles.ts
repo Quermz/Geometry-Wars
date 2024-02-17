@@ -23,6 +23,7 @@ class Particle {
         sprite: new PIXI.Graphics(),
         direction: { x: 1 - 2 * Math.random(), y: 1 - 2 * Math.random() },
       };
+
       particle.sprite.lineStyle(1.5, colour);
       if (shape == "circle") {
         let size = 1 + 5 * Math.random();
@@ -45,6 +46,14 @@ class Particle {
         particle.sprite.drawPolygon(path);
         particle.sprite.rotation = Math.PI * 2 * Math.random();
       }
+      if (shape == "player") {
+        let size = 8 + 8 * Math.random();
+        particle.sprite.drawRect(0, 0, size, size);
+        particle.direction = {
+          x: 3 - 6 * Math.random(),
+          y: 3 - 6 * Math.random(),
+        };
+      }
       particle.sprite.x = x;
       particle.sprite.y = y;
       let blurFilter = new PIXI.BlurFilter(0);
@@ -58,8 +67,8 @@ class Particle {
     for (let particle of this.particleArray) {
       particle.sprite.x += (particle.direction.x / 2) * delta;
       particle.sprite.y += (particle.direction.y / 2) * delta;
-      particle.sprite.alpha -= 0.01 + (Math.random() / 1000) * delta;
-      if (particle.sprite.alpha == 0) {
+      particle.sprite.alpha -= 0.01 * delta + Math.random() / 1000;
+      if (particle.sprite.alpha < 0) {
         this.finished = true;
       }
     }
