@@ -15,7 +15,7 @@ class Player {
   firingLimit: number;
   oldScore: number;
 
-  constructor(x = 200, y = 200, height = 50, width = 50) {
+  constructor(x = 480, y = 320, height = 50, width = 50) {
     this.sprite = new PIXI.Sprite(texture);
     this.sprite.x = x;
     this.sprite.y = y;
@@ -81,7 +81,18 @@ class Player {
       }
     });
   }
-
+  reset() {
+    this.sprite.x = 480;
+    this.sprite.y = 320;
+    this.directionKey = "up";
+    this.keysPressed = { w: false, a: false, s: false, d: false };
+    this.directionKey = "up";
+    this.currentVelocity = vectorCalc({ x: 0, y: 0 }, { x: 0, y: 0 }, 0.92);
+    this.counter = 0;
+    this.edge = 12;
+    this.firingLimit = 10;
+    this.oldScore = 0;
+  }
   move(delta: number, xLimit = 960, yLimit = 640) {
     let targetX = 0;
     let targetY = 0;

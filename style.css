@@ -7,8 +7,6 @@ body{
 
 }
 
-
-
 .container{
   margin-top: 20px;
   display: flex;
@@ -19,7 +17,7 @@ body{
   
 }
 
-.test{
+.pixiCanvas{
   border-radius: 10px;
   border: 2px solid rgba(255, 255, 255, .5);
 }

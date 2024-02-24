@@ -14,8 +14,25 @@ class Score {
         this.score = 0;
         this.counter = 0;
         this.flashCounter = 0;
+        this.text.alpha = 0;
+    }
+    reset() {
+        this.text.text = "00000";
+        this.text.x = 910;
+        this.text.y = 25;
+        this.text.zIndex;
+        this.text.style = {
+            fill: "white",
+            fontFamily: "VT323",
+            fontSize: 40,
+        };
+        this.score = 0;
+        this.counter = 0;
+        this.flashCounter = 0;
+        this.text.alpha = 1;
     }
     incremenetScore() {
+        this.text.alpha = 1;
         this.counter += 1;
         if (this.counter == 7) {
             this.score += 1;

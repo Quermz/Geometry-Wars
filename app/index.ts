@@ -7,17 +7,10 @@ import { Particle } from "./particles/particles.js";
 import { spawner } from "./shape/spawner/spawner.js";
 import { Score } from "./score/score.js";
 import { collision } from "./utils/collision.js";
-
-let music = sound.add("my-sound", "./app/resources/song2.mp3");
-
-music.loop = true;
-
-music.volume = 0.25;
-
-sound.play("my-sound");
+import { Menu } from "./menu/menu.js";
 
 let canvas = document.getElementsByTagName("canvas")[0];
-canvas.className = "test";
+canvas.className = "pixiCanvas";
 
 const app = new PIXI.Application<HTMLCanvasElement>({
   view: canvas,
@@ -28,30 +21,31 @@ const app = new PIXI.Application<HTMLCanvasElement>({
 
 const player = new Player();
 
-app.stage.addChild(player.sprite);
-
 let laserArr: Laser[] = [];
 
 let particlesArray: Particle[] = [];
 
 let shapeArray: Shape[] = [];
 
-let score = new Score();
+const score = new Score();
+
+const menu = new Menu(app, player, laserArr, particlesArray, shapeArray, score);
 
 app.ticker.maxFPS = 60;
+
+app.stage.addChild(player.sprite);
+
 app.stage.addChild(score.text);
 
-let gameLive = true;
-
 app.ticker.add((delta: number) => {
-  if (gameLive) {
+  if (menu.gameLive && !menu.startMenuOpen) {
     player.move(delta);
     score.incremenetScore();
 
     //Check player collision
     for (let shape of shapeArray) {
       if (collision(player, shape)) {
-        gameLive = false;
+        menu.gameLive = false;
         particlesArray.push(player.explode());
         app.stage.removeChild(player.sprite);
       }
@@ -121,19 +115,29 @@ app.ticker.add((delta: number) => {
       player.sprite.x,
       player.sprite.y
     );
+
     if (newShape) {
       newShapeArr.push(newShape);
       app.stage.addChild(newShape.sprite);
     }
 
     shapeArray = newShapeArr;
-  } else {
+  } else if (!menu.gameLive && !menu.startMenuOpen) {
     //Game Over
-    music.loop = false;
+
+    menu.openGameOverMenu(app);
+
+    //Fade music
+    menu.musicStop();
+    // music.loop = false;
+    // if (music.volume > 0) {
+    //   music.volume -= 0.001;
+    // }
+
     score.flash();
     for (let shape of shapeArray) {
       app.stage.removeChild(shape.sprite);
-      gameLive = false;
+      menu.gameLive = false;
       particlesArray.push(shape.explode());
     }
     shapeArray = [];
@@ -144,12 +148,12 @@ app.ticker.add((delta: number) => {
 
     laserArr = [];
 
-    for (let i in particlesArray) {
-      if (!particlesArray[i].added) {
-        app.stage.addChild(particlesArray[i].container);
-        particlesArray[i].added = true;
+    for (let particle of particlesArray) {
+      if (!particle.added) {
+        app.stage.addChild(particle.container);
+        particle.added = true;
       }
-      particlesArray[i].move(delta / 5);
+      particle.move(delta);
     }
     //If particles have finished their animations remove from array
     let newParticlesArray: Particle[] = [];
