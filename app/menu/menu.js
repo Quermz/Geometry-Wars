@@ -51,7 +51,7 @@ class Menu {
         title.y = 160;
         title.style = {
             fill: "white",
-            fontFamily: "VT323",
+            fontFamily: "Trebuchet MS",
             fontSize: 60,
         };
         let toStart = new PIXI.Text("Press to start");
@@ -60,18 +60,18 @@ class Menu {
         toStart.y = 240;
         toStart.style = {
             fill: "white",
-            fontFamily: "VT323",
+            fontFamily: "Trebuchet MS",
             fontSize: 40,
         };
         let buttonContainer = new PIXI.Container();
-        let w = this.letter("w");
-        let a = this.letter("a");
-        let s = this.letter("s");
-        let d = this.letter("d");
-        let up = this.letter("up", true);
-        let left = this.letter("left", true);
-        let down = this.letter("down", true);
-        let right = this.letter("right", true);
+        let w = this.letter("W");
+        let a = this.letter("A");
+        let s = this.letter("S");
+        let d = this.letter("D");
+        let up = this.letter("UP", true);
+        let left = this.letter("LEFT", true);
+        let down = this.letter("DOWN", true);
+        let right = this.letter("RIGHT", true);
         w.x = 355;
         w.y = 390;
         a.x = 295;
@@ -103,14 +103,18 @@ class Menu {
         let letter = new PIXI.Text(text);
         letter.style = {
             fill: "white",
-            fontFamily: "VT323",
-            fontSize: 50,
+            fontFamily: "Trebuchet MS",
+            fontSize: 40,
         };
         letter.anchor.set(0.5);
         letter.x = 25;
         letter.y = 25;
         if (arrow) {
-            letter.style = { fontSize: 20, fontFamily: "VT323", fill: "white" };
+            letter.style = {
+                fontSize: 15,
+                fontFamily: "Trebuchet MS",
+                fill: "white",
+            };
             letter.anchor.set(0.5, 0.5);
             letter.x = 25;
             letter.y = 25;
